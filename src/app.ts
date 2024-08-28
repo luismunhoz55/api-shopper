@@ -1,18 +1,15 @@
-import fastify from "fastify";
+import express, { Express, Request, Response } from "express";
+import dotenv from "dotenv";
 
-const server = fastify();
+dotenv.config();
 
-server.get("/healthcheck", (req, rep) => {
-  return {
-    status: "OK",
-  };
+const app: Express = express();
+const port = process.env.PORT || 3000;
+
+app.get("/healthcheck", (req: Request, res: Response) => {
+  res.send("api-shopper! 🐱‍🐉");
 });
 
-// Configure fastify
-server
-  .listen({
-    port: 3333,
-  })
-  .then(() => {
-    console.log("Server rodando em localhost:3333");
-  });
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+});
