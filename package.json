@@ -1,0 +1,29 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/app.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.6.3",
+    "tsx": "^3.12.10",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@fastify/jwt": "5.0.0",
+    "@fastify/static": "5.0.0",
+    "@fastify/swagger": "6.0.0",
+    "@prisma/client": "^5.3.1",
+    "fastify": "^4.23.2",
+    "fastify-jwt": "^4.2.0",
+    "fastify-zod": "^1.4.0",
+    "prisma": "^5.3.1",
+    "zod": "^3.22.2",
+    "zod-to-json-schema": "^3.21.4"
+  }
+}
