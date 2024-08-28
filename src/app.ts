@@ -4,9 +4,12 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app: Express = express();
-const port = process.env.PORT || 3000;
+const port = 5000;
 
-app.get("/healthcheck", (req: Request, res: Response) => {
+app.use(express.json());
+
+// test if it's working
+app.get("/", (req: Request, res: Response) => {
   res.send("api-shopper! 🐱‍🐉");
 });
 

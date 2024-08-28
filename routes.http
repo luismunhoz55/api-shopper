@@ -1,2 +1,4 @@
 # @name Healthcheck
-GET http://localhost:3000/healthcheck
+GET http://localhost:5000
+
+###
