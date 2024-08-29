@@ -3,6 +3,8 @@ FROM node:latest
 # Create app directory
 WORKDIR /src/app
 
+ENV DATABASE_URL=file:./dev.db
+
 COPY package*.json ./
 
 RUN npm install
