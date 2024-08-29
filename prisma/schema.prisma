@@ -8,19 +8,19 @@ datasource db {
 }
 
 model Customer {
-  id          String @id @default(uuid())
-  code        String
+  id                String @id @default(uuid())
+  code              String
 
-  measures    Measure[]
+  measures          Measure[]
 }
 
 model Measure {
-  id String   @id @default(uuid())
-  type        String
-  confirmed   Boolean
-  imageUrl    String
-  createdAt   DateTime @default(now())
+  id String         @id @default(uuid())
+  type              String
+  confirmed         Boolean
+  imageUrl          String
+  measureDatetime   DateTime
 
-  customerId  String
-  customer    Customer   @relation(fields: [customerId], references: [id])
+  customerId        String
+  customer          Customer   @relation(fields: [customerId], references: [id])
 }

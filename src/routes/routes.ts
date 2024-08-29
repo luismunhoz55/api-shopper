@@ -9,7 +9,7 @@ import axios from "axios";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { GoogleAIFileManager } from "@google/generative-ai/server";
 
-// Access your API key as an environment variable (see "Set up your API key" above)
+// Configure the Gemini model
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY!);
 
@@ -19,15 +19,31 @@ const router = Router();
 const prisma = new PrismaClient();
 
 router.post("/upload", async (req: Request, res: Response) => {
+  // Schema to validate the params
   const imageSchema = z.object({
-    code: z.string({
-      required_error: "Por favor, insira o código do consumidor",
+    customer_code: z.string({
       invalid_type_error: "O código deve ser uma string",
+      required_error: "Por favor, insira o código do consumidor",
     }),
+    measure_datetime: z
+      .string({
+        invalid_type_error: "A data deve ser uma string",
+        required_error: "Por favor, insira a data da medição",
+      })
+      .date("Insira uma data válida no formato YYYY-MM-DD"),
+    measure_type: z
+      .string({
+        invalid_type_error: "O tipo deve ser uma string",
+        required_error: "Por favor, insira o tipo da medição",
+      })
+      .refine(
+        (type) => type === "GAS" || type === "WATER",
+        `O tipo deve ser "GAS" ou "WATER"`
+      ),
     image: z
       .string({
-        required_error: "É necessário enviar a imagem",
         invalid_type_error: "A imagem precisa ser uma string",
+        required_error: "É necessário enviar a imagem",
       })
       // Verify if the image is a valid base64 image
       .refine((image) => isValidBase64Image(image), {
@@ -37,14 +53,15 @@ router.post("/upload", async (req: Request, res: Response) => {
 
   try {
     // Get the correctly parameters
-    const { code, image } = imageSchema.parse(req.body);
+    const { customer_code, measure_datetime, measure_type, image } =
+      imageSchema.parse(req.body);
 
-    await verifyIfHasAlreadyConsulted(code);
+    // await verifyIfHasAlreadyConsulted(customer_code, measure_datetime);
 
     // Create the record of this customer
     const customer = await prisma.customer.create({
       data: {
-        code,
+        code: customer_code,
       },
     });
 
@@ -68,18 +85,23 @@ router.post("/upload", async (req: Request, res: Response) => {
           fileUri: uploadResponse.file.uri,
         },
       },
-      { text: "Describe the image." },
+      {
+        text: `The image you received is a ${measure_type.toLowerCase} meter, please return to me ONLY the number of the meter`,
+      },
     ]);
 
     console.log(result.response.text());
 
+    return res.json({ message: "OK" });
+
     // Get the response and create the record of the measure
     await prisma.measure.create({
       data: {
-        type: "WATER",
+        type: measure_type,
+        measureDatetime: measure_datetime,
         confirmed: false,
-        imageUrl: image,
         customerId: customer.id,
+        imageUrl: image,
       },
     });
 
@@ -118,8 +140,11 @@ router.get("/gemini", async (req: Request, res: Response) => {
   return res.json(text);
 });
 
-async function verifyIfHasAlreadyConsulted(code: string) {
-  const startOfMonth = new Date();
+async function verifyIfHasAlreadyConsulted(
+  customer_code: string,
+  measure_datetime: string
+) {
+  const startOfMonth = new Date(measure_datetime);
   startOfMonth.setDate(1); // First day of the month
   startOfMonth.setHours(0, 0, 0, 0);
 
@@ -130,10 +155,10 @@ async function verifyIfHasAlreadyConsulted(code: string) {
   // Verify if the user has already taken one measure this month
   const hasAlreadyConsulted = await prisma.customer.findMany({
     where: {
-      code,
+      code: customer_code,
       measures: {
         some: {
-          createdAt: {
+          measureDatetime: {
             gte: startOfMonth,
             lt: endOfMonth,
           },
