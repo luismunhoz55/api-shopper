@@ -89,7 +89,7 @@ router.post("/upload", async (req: Request, res: Response) => {
         type: measure_type,
         measureDatetime: new Date(measure_datetime),
         confirmed: false,
-        value: Number(measureQuantity),
+        value: measureQuantity,
         customerId: customer.id,
         imageUrl: image,
       },
@@ -107,7 +107,7 @@ router.post("/upload", async (req: Request, res: Response) => {
     });
   } catch (error) {
     if (error instanceof ZodError) {
-      return res.status(409).json({
+      return res.status(400).json({
         error_code: "INVALID_DATA",
         error_description: error.issues[0].message,
       });
@@ -138,11 +138,7 @@ router.patch("/confirm", async (req: Request, res: Response) => {
     });
 
     if (measure == null || measure == undefined) {
-      throw new AppError(
-        404,
-        "MEASURE_NOT_FOUND",
-        "Leitura do mês já realizada"
-      );
+      throw new AppError(404, "MEASURE_NOT_FOUND", "Leitura não encontrada");
     }
 
     if (measure.confirmed == true) {
@@ -225,7 +221,7 @@ router.get("/:customer_code/list", async (req: Request, res: Response) => {
 
     const formattedMeasures = measures.map((measure: Measure) => ({
       measure_uuid: measure.id,
-      measure_datetime: measure.measureDatetime,
+      measure_datetime: new Date(measure.measureDatetime),
       measure_type: measure.type,
       has_confirmed: measure.confirmed,
       image_url: measure.imageUrl,
@@ -255,13 +251,6 @@ router.get("/:customer_code/list", async (req: Request, res: Response) => {
       error_description: error,
     });
   }
-});
-
-router.get("/registers", async (req: Request, res: Response) => {
-  const customers = await prisma.customer.findMany();
-  const measures = await prisma.measure.findMany();
-
-  return res.json({ customers, measures });
 });
 
 export default router;

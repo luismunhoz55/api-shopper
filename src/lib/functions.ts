@@ -63,6 +63,6 @@ export async function verifyIfHasAlreadyConsulted(
   }
 }
 
-export function extractNumbers(str: string): string {
-  return str.replace(/\D/g, ""); // Replace all the characters that are not numbers with empty strings
+export function extractNumbers(str: string): number {
+  return Number(str.replace(/\D/g, "")); // Replace all the characters that are not numbers with empty strings
 }

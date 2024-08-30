@@ -1,7 +1,7 @@
 export interface Measure {
   id: string;
   type: string;
-  confirmed: string;
+  confirmed: boolean;
   value: number;
   measureDatetime: Date;
   createdAt: Date;
