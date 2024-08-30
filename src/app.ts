@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import router from "./routes/routes";
-const path = require("path");
+import "./lib/deleteImages";
+import path from "path";
 
 const app: Express = express();
 const port = 5000;
