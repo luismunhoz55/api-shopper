@@ -4,6 +4,7 @@ import z, { ZodError } from "zod";
 import { verifyIfHasAlreadyConsulted, extractNumbers } from "../lib/functions";
 import { AppError } from "../lib/helpers";
 import { converBase64ToImage } from "convert-base64-to-image";
+import { v4 as uuidv4 } from "uuid";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { GoogleAIFileManager } from "@google/generative-ai/server";
@@ -32,8 +33,9 @@ router.post("/upload", async (req: Request, res: Response) => {
     );
 
     // Convert the image and verify if it's valid
+    const imageId = uuidv4();
     const base64 = image;
-    const pathToSaveImage = "./images/image.jpg";
+    const pathToSaveImage = `./images/image${imageId}.jpg`;
 
     await converBase64ToImage(base64, pathToSaveImage);
 
@@ -56,6 +58,7 @@ router.post("/upload", async (req: Request, res: Response) => {
       },
     ]);
 
+    // Get the quantity measured by Gemini
     const measureQuantity = extractNumbers(result.response.text());
 
     // Create the record of this customer
