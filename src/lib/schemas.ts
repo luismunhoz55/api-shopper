@@ -2,7 +2,7 @@ import z from "zod";
 import { isValidBase64Image } from "./functions";
 
 /**
- * Schemas to get the correct params from the request
+ * Schemas to get the correct params from the requests
  */
 
 export const uploadSchema = z.object({

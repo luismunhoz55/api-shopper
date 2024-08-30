@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import { ZodError } from "zod";
 import { verifyIfHasAlreadyConsulted, extractNumbers } from "../lib/functions";
-import { AppError } from "../lib/helpers";
+import { AppError } from "../lib/error";
 import { converBase64ToImage } from "convert-base64-to-image";
 import { v4 as uuidv4 } from "uuid";
 

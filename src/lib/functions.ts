@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-import { AppError } from "./helpers";
+import { AppError } from "./error";
 
-export function isValidBase64Image(base64String: string) {
+export function isValidBase64Image(base64String: string): boolean {
   // Regex to verify the string prefix to base64 images
   const base64ImageRegex = /^data:image\/(png|jpg|jpeg|gif|bmp|webp);base64,/;
 
@@ -26,7 +26,7 @@ export async function verifyIfHasAlreadyConsulted(
   customer_code: string,
   measure_type: string,
   measure_datetime: string
-) {
+): Promise<boolean> {
   const prisma = new PrismaClient();
 
   const startOfMonth = new Date(measure_datetime);
@@ -61,6 +61,7 @@ export async function verifyIfHasAlreadyConsulted(
   if (hasAlreadyConsultedVerification) {
     throw new AppError(409, "DOUBLE_REPORT", "Leitura do mês já realizada");
   }
+  return false;
 }
 
 export function extractNumbers(str: string): number {
