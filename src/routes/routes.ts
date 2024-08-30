@@ -39,9 +39,9 @@ router.post("/upload", async (req: Request, res: Response) => {
     );
 
     // Convert the image and verify if it's valid
-    const uuid = uuidv4();
+    const imageId = uuidv4();
     const base64 = image;
-    const imageName = `image${uuid}.jpg`;
+    const imageName = `image${imageId}.jpg`;
     const pathToSaveImage = `./src/images/${imageName}`;
 
     await converBase64ToImage(base64, pathToSaveImage);
@@ -86,7 +86,6 @@ router.post("/upload", async (req: Request, res: Response) => {
     // Get the response and create the record of the measure
     const measure = await prisma.measure.create({
       data: {
-        id: uuid,
         type: measure_type,
         measureDatetime: new Date(measure_datetime),
         confirmed: false,
