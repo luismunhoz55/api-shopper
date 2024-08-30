@@ -59,7 +59,7 @@ export async function verifyIfHasAlreadyConsulted(
     hasAlreadyConsulted.length > 0;
 
   if (hasAlreadyConsultedVerification) {
-    throw new AppError("Leitura do mês já realizada");
+    throw new AppError(409, "DOUBLE_REPORT", "Leitura do mês já realizada");
   }
 }
 
