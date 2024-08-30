@@ -1,3 +1,8 @@
+export interface Customer {
+  id: string;
+  code: string;
+}
+
 export interface Measure {
   id: string;
   type: string;

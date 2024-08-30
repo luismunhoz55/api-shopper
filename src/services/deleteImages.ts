@@ -2,6 +2,8 @@ import cron from "node-cron";
 import fs from "fs";
 import path from "path";
 
+const IMAGE_LIFETIME_MS = 10 * 60 * 1000;
+
 cron.schedule("* * * * *", () => {
   const directory = path.join(__dirname, "../images");
 
@@ -16,8 +18,7 @@ cron.schedule("* * * * *", () => {
         const now = Date.now();
         const fileAge = now - stats.mtimeMs;
 
-        // Delete the file if older than 10 minutes
-        if (fileAge > 10 * 60 * 1000) {
+        if (fileAge > IMAGE_LIFETIME_MS) {
           fs.unlink(filePath, (err) => {
             if (err) throw err;
           });

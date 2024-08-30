@@ -15,7 +15,7 @@ export const uploadSchema = z.object({
       invalid_type_error: "A data deve ser uma string",
       required_error: "Por favor, insira a data da medição",
     })
-    .date("Insira uma data válida no formato YYYY-MM-DD"),
+    .datetime("Insira uma data válida no formato ISO 8601"),
   measure_type: z
     .string({
       invalid_type_error: "O tipo deve ser uma string",

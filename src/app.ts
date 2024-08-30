@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from "express";
 import router from "./routes/routes";
-import "./lib/deleteImages";
+import "./services/deleteImages";
 import path from "path";
 
 const app: Express = express();
