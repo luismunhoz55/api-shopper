@@ -10,7 +10,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 export async function uploadAndAnalyzeImage(
   pathToSaveImage: string,
   measure_type: string
-) {
+): Promise<number> {
   const uploadResponse = await fileManager.uploadFile(pathToSaveImage, {
     mimeType: "image/jpeg",
     displayName: "Water Gas measure",
